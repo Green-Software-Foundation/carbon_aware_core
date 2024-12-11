@@ -125,9 +125,8 @@ jobs:
         env:
           DataSources__EmissionsDataSource: Json
           DataSources__Configurations__Json__Type: JSON
-        run: dotnet tool run swagger tofile --output ./wwwroot/api/v1/swagger.yaml --yaml ${{ env.DLL_FILE_PATH }} v1
-        env:
           DOTNET_ROLL_FORWARD: LatestMajor
+        run: dotnet tool run swagger tofile --output ./wwwroot/api/v1/swagger.yaml --yaml ${{ env.DLL_FILE_PATH }} v1
         working-directory: ./src/CarbonAware.WebApi/src 
       
       - name: Upload swagger artifact
