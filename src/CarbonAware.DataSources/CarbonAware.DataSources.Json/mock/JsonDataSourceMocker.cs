@@ -6,12 +6,17 @@ using System.Text.Json;
 namespace CarbonAware.DataSources.Json.Mocks;
 public class JsonDataSourceMocker : IDataSourceMocker
 {
-    public JsonDataSourceMocker() { }
+
+    public string DataFileName { get; set; }
+
+    public JsonDataSourceMocker() {
+        DataFileName = "test-data-azure-emissions.json";
+    }
 
     public void SetupDataMock(DateTimeOffset start, DateTimeOffset end, string location)
     {
         var config = new JsonDataSourceConfiguration();
-        config.DataFileLocation = "test-data-azure-emissions.json";
+        config.DataFileLocation = DataFileName;
         string path = config.DataFileLocation;
 
         var data = new List<EmissionsData>();
