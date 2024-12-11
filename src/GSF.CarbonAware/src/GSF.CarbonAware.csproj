@@ -57,6 +57,6 @@
   </ItemGroup>
 
   <Target Name="CreateDatasourceDirectory" AfterTargets="Build">
-    <MakeDir Directories="$(TargetDir)\data-sources\json,$(TargetDir)\location-sources\json" />
+    <MakeDir Directories="$(TargetDir)\data-sources\json;$(TargetDir)\location-sources\json" />
   </Target>
 </Project>
