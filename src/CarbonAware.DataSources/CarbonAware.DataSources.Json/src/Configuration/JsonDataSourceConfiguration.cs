@@ -29,10 +29,13 @@ internal class JsonDataSourceConfiguration
         }
     }
 
+    public bool CacheJsonData { get; set; }
+
     public JsonDataSourceConfiguration()
     {
         var assemblyPath = Assembly.GetExecutingAssembly().Location;
         assemblyDirectory = Path.GetDirectoryName(assemblyPath)!;
+        CacheJsonData = true;
     }
 
     private static bool IsValidDirPath(string fileName)

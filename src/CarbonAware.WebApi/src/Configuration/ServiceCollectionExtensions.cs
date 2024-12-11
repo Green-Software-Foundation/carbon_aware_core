@@ -1,4 +1,8 @@
 using Microsoft.Extensions.Options;
+using CarbonAware.WebApi.Metrics;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 namespace CarbonAware.WebApi.Configuration;
 
@@ -30,6 +34,50 @@ internal static class ServiceCollectionExtensions
           // Can be extended in the future to support a different provider like Zipkin, Prometheus etc 
         }
 
+        var enableTelemetryLogging = envVars?.EnableTelemetryLogging ?? true;
+        if (enableTelemetryLogging)
+        {
+            string serviceName = envVars?.WebAPISpecTitle ?? "CarbonAware.WebAPI";
+            string serviceVersion = envVars?.WebAPISpecVersion ?? "1.0.0";
+
+            services.AddOpenTelemetry()
+                .WithTracing(tracerProviderBuilder =>
+                    tracerProviderBuilder
+                    .AddConsoleExporter()
+                    .AddSource(serviceName)
+                    .SetResourceBuilder(
+                        ResourceBuilder.CreateDefault()
+                            .AddService(serviceName: serviceName, serviceVersion: serviceVersion))
+                    .AddHttpClientInstrumentation()
+                    .AddAspNetCoreInstrumentation());
+        }
+    }
+
+    public static IServiceCollection AddCarbonExporter(this IServiceCollection services, IConfiguration configuration)
+    {
+        var envVars = configuration?.GetSection(CarbonAwareVariablesConfiguration.Key).Get<CarbonAwareVariablesConfiguration>();
+        var enableCarbonExporter = envVars?.EnableCarbonExporter ?? false;
+        if(enableCarbonExporter){
+            var carbonExporter = configuration?.GetSection(CarbonExporterConfiguration.Key);
+            services.Configure<CarbonExporterConfiguration>(c => 
+            {
+                carbonExporter?.Bind(c);
+            });
+
+            services.AddOpenTelemetry()
+                .WithMetrics(meterProviderBuilder =>
+                    meterProviderBuilder
+                    .ConfigureServices(services => 
+                    {
+                        services.AddSingleton<MetricsResourceDetector>();
+                        services.AddSingleton<CarbonMetrics>();
+                    })
+                    .ConfigureResource(rb => rb.AddDetector(sp => sp.GetRequiredService<MetricsResourceDetector>()))
+                    .AddMeter(CarbonMetrics.MeterName)
+                    .AddPrometheusExporter()
+                );
+        }
+        return services;
     }
 
     private static bool IsAppInsightsConfigured(IConfiguration? configuration, ILogger logger)

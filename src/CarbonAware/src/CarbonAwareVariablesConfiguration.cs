@@ -36,6 +36,15 @@ internal class CarbonAwareVariablesConfiguration
 
     public string TelemetryProvider { get; set; }
 
+    public Boolean EnableTelemetryLogging { get; set; }
+
+    public Boolean EnableCarbonExporter { get;set; }
+
     public Boolean VerboseApi {get; set;}
 
+    public string WebAPISpecName { get; } = "v1";
+
+    public string WebAPISpecVersion { get; } = "1.0.0";
+
+    public string WebAPISpecTitle { get; } = "CarbonAware.WebAPI";
 }

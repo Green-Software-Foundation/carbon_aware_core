@@ -17,13 +17,15 @@ and the approved contribution process that members should follow.
   - [Collaborating with the OSWG](#collaborating-with-the-opensource-working-group)
 
 ## Current Opportunities
-We have opportunities for both code and non code contributors. 
+We have opportunities for both code and non code contributors. We're currently looking all contributions, with some areas of extra opportunity outlined in the table below.
 
-We're currently looking for contributions in the following areas:
-1. Sample Creation 
-2. Documentation Updates, including getting docusaurus up and running
-3. Video Content Creation (how to enable, demos etc)
-4. Slide Deck Creation, available for presenter use, including real time video demo
+
+| Contribution Areas | Description |
+|----------|----------|
+|**Sample Creation** | These help adopters of the SDK learn how they can quick get started and build their own carbon aware solutions.|
+|**Documentation Updates** | The documentation always can be improved to make the Carbon Aware SDK more accessible to everyone.  Guides, SDK and API document, and more! |
+|**Video Content Creation (how to enable, demos etc)** | Quick videos help adopters undersatnd just how easy it is to get started in an easy to consume form.
+|**Slide Deck Creation <br /> Available for presenter use, including real time video demo**| We get a lot of traction at conferences, and if we have a standard deck for anyone to present, it will enable those who might not be able to create a deck, but could easily present it, to also participate.
 
 ## How To Get Started 
 Introduce yourself on on our [discussions page](https://github.com/orgs/Green-Software-Foundation/discussions/65) and let us know where you think you can help. 
@@ -83,7 +85,7 @@ do **not** open an issue to request features.
 3. PR to be submitted against the **DEV feature branch**
 4. PR discussed with the WG. If agreed, the WG Chair will merge into **DEV
    Feature branch**
-   ![GSF Single-Trunk Based Branch Flow](/docs/images/single-trunk-branch.svg)
+   ![GSF Single-Trunk Based Branch Flow](./images/readme/single-trunk-branch.svg)
 5. See
    [The Way we Work](https://github.com/Green-Software-Foundation/standards_wg/blob/main/the_way_we_work.md)
    for futher details.

@@ -3,6 +3,8 @@ using NUnit.Framework;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework.Internal;
+using OpenTelemetry.Trace;
+using Microsoft.ApplicationInsights;
 
 namespace CarbonAware.WepApi.UnitTests;
 
@@ -79,8 +81,63 @@ public class ServiceCollectionExtensionsTests
 
         // Act & Assert
         Assert.DoesNotThrow(() => services.AddMonitoringAndTelemetry(configuration));
+        Assert.Null(services.BuildServiceProvider().GetService<TelemetryClient>());
+    }
+
+    [Test]
+    public void AddCarbonExporter_AddsServices_IsEnabledInConfiguration()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        var inMemorySettings = new Dictionary<string, string>
+        {
+            { "CarbonAwareVars:EnableCarbonExporter", "true" }
+        };
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => services.AddCarbonExporter(configuration));
+        Assert.That(services.Count, Is.GreaterThan(0));
+    }
+
+    [Test]
+    public void AddCarbonExporter_DoesNotAddServices_IsDisabledInConfiguration()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        var inMemorySettings = new Dictionary<string, string>
+        {
+            { "CarbonAwareVars:EnableCarbonExporter", "false" }
+        };
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => services.AddCarbonExporter(configuration));
         Assert.That(services.Count, Is.EqualTo(0));
-    }    
+    }
+
+
+    [Test]
+    public void AddCarbonExporter_DoesNotAddServices_WithoutConfiguration()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        var inMemorySettings = new Dictionary<string, string>{};
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => services.AddCarbonExporter(configuration));
+        Assert.That(services.Count, Is.EqualTo(0));
+    }
 
     [Test]
     public void CreateConsoleLogger_ReturnsILogger()
@@ -100,5 +157,59 @@ public class ServiceCollectionExtensionsTests
 
         // Assert
         Assert.That(logger, Is.Not.Null);
+    }
+
+    [Test]
+    public void EnableTelemetryLogging_AddsServices_WithoutConfiguration()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        var inMemorySettings = new Dictionary<string, string> { };
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => services.AddMonitoringAndTelemetry(configuration));
+        Assert.NotNull(services.BuildServiceProvider().GetService<TracerProvider>());
+    }
+
+    [Test]
+    public void EnableTelemetryLogging_AddsServices_IsEnabledInConfiguration()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        var inMemorySettings = new Dictionary<string, string>
+        {
+            { "CarbonAwareVars:EnableTelemetryLogging", "true" }
+        };
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => services.AddMonitoringAndTelemetry(configuration));
+        Assert.NotNull(services.BuildServiceProvider().GetService<TracerProvider>());
+    }
+
+    [Test]
+    public void EnableTelemetryLogging_AddsServices_IsDisabledInConfiguration()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        var inMemorySettings = new Dictionary<string, string>
+        {
+            { "CarbonAwareVars:EnableTelemetryLogging", "false" }
+        };
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => services.AddMonitoringAndTelemetry(configuration));
+        Assert.Null(services.BuildServiceProvider().GetService<TracerProvider>());
     }
 }
